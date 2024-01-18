@@ -20,15 +20,16 @@ public class MySocketClient {
                 System.out.printf("Connected to server with address: http://localhost:%s%n", PORT);
 
                 while (true) {
+                    System.out.println("Enter message to send (Q to finish the work):");
+
                     String messageToSend = consoleIn.readLine() + END_OF_MESSAGE_MARK;
-                    if (EXIT_MESSAGE.equals(messageToSend + END_OF_MESSAGE_MARK)) {
-                        break;
-                    }
                     out.write(messageToSend.getBytes());
-                    out.flush();
 
                     String response = in.readLine();
                     System.out.printf("Server response: '%s'%n", response);
+                    if (EXIT_MESSAGE.equals(messageToSend)) {
+                        break;
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
