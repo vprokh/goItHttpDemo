@@ -13,26 +13,30 @@ public class MySocketClient {
     public static void main(String[] args) {
         final int PORT = 9999;
 
-            try (Socket socket = new Socket("localhost", PORT);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 OutputStream out = socket.getOutputStream();
-                 BufferedReader consoleIn = new BufferedReader(new InputStreamReader(System.in))) {
-                System.out.printf("Connected to server with address: http://localhost:%s%n", PORT);
-
-                while (true) {
-                    System.out.println("Enter message to send (Q to finish the work):");
-
-                    String messageToSend = consoleIn.readLine() + END_OF_MESSAGE_MARK;
-                    out.write(messageToSend.getBytes());
-
-                    String response = in.readLine();
-                    System.out.printf("Server response: '%s'%n", response);
-                    if (EXIT_MESSAGE.equals(messageToSend)) {
-                        break;
-                    }
+        try (
+                Socket socket = new Socket("localhost", PORT);
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                OutputStream out = socket.getOutputStream();
+                BufferedReader consoleIn = new BufferedReader(new InputStreamReader(System.in));
+        ) {
+            System.out.println("Connected to server with adress: http://localhost:" + PORT);
+            System.out.print("Press your nick: ");
+            String messageToSend = consoleIn.readLine() + END_OF_MESSAGE_MARK;
+            out.write(messageToSend.getBytes());
+            out.flush();
+            while (true) {
+                messageToSend = consoleIn.readLine() + END_OF_MESSAGE_MARK;
+                if(EXIT_MESSAGE.equals(messageToSend)) {
+                    break;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                out.write(messageToSend.getBytes());
+                out.flush();
+
+                String response = in.readLine();
+                System.out.println("Response from server: " + response);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
